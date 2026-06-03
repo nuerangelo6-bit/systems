@@ -12,7 +12,7 @@ import {
 } from 'react-icons/md'
 import { getUser, isSuperAdmin, isStudent } from '../utils/auth'
 
-const API = '/api'
+const API = 'https://systems-production.up.railway.app/api'
 
 export default function CaseDetail() {
   const { id } = useParams()

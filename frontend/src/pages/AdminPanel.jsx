@@ -5,7 +5,7 @@ import StatusBadge from '../components/StatusBadge'
 import { MdRefresh, MdAssignment, MdPeople, MdGavel, MdAdminPanelSettings, MdWarning } from 'react-icons/md'
 import { Link } from 'react-router-dom'
 
-const API = '/api'
+const API = 'https://systems-production.up.railway.app/api'
 
 export default function AdminPanel() {
   const [admins, setAdmins] = useState([])

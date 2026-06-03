@@ -4,7 +4,7 @@ import { MdPerson, MdEmail, MdBadge, MdEdit, MdLock, MdSave, MdCancel } from 're
 import { getUser, setUser } from '../utils/auth'
 import Toast from '../components/Toast'
 
-const API = '/api'
+const API = 'https://systems-production.up.railway.app/api'
 
 export default function Profile() {
   const user = getUser()

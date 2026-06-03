@@ -7,7 +7,7 @@ import GrievanceChart from '../components/GrievanceChart'
 import { MdRefresh, MdSearch, MdGavel, MdCalendarToday, MdPerson, MdFilterList, MdInbox, MdAssignment, MdHourglassEmpty, MdCheckCircle, MdWarning, MdLocationOn } from 'react-icons/md'
 import { getUser } from '../utils/auth'
 
-const API = '/api'
+const API = 'https://systems-production.up.railway.app/api'
 const LIMIT = 50 
 
 export default function Dashboard() {

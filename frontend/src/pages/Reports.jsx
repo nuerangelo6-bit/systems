@@ -7,7 +7,7 @@ import { getUser } from '../utils/auth'
 import GrievanceChart from '../components/GrievanceChart'
 import Toast from '../components/Toast'
 
-const API = '/api'
+const API = 'https://systems-production.up.railway.app/api'
 
 export default function Reports() {
   const user = getUser()

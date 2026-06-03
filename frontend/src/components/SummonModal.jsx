@@ -2,7 +2,7 @@ import React from 'react'
 import { MdClose, MdCalendarToday, MdLocationOn, MdPerson, MdGavel, MdCheckCircle, MdPrint } from 'react-icons/md'
 import axios from 'axios'
 
-const API = '/api'
+const API = 'https://systems-production.up.railway.app/api'
 
 export default function SummonModal({ summon, onClose, onRead, onPrint }) {
   if (!summon) return null

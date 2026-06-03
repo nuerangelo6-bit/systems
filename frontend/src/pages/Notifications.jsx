@@ -5,7 +5,7 @@ import { MdNotifications, MdMarkEmailRead, MdDelete, MdFilterList, MdCheckCircle
 import { getUser } from '../utils/auth'
 import Toast from '../components/Toast'
 
-const API = '/api'
+const API = 'https://systems-production.up.railway.app/api'
 
 export default function Notifications() {
   const user = getUser()

@@ -9,7 +9,7 @@ import GrievanceChart from '../components/GrievanceChart'
 import { MdAdd, MdGavel, MdCalendarToday, MdNotifications, MdRefresh, MdDescription, MdChevronRight, MdPrint, MdAssignment, MdInbox, MdSettings, MdCheckCircle, MdLocationOn, MdWarning, MdMail } from 'react-icons/md'
 import { getUser } from '../utils/auth'
 
-const API = '/api'
+const API = 'https://systems-production.up.railway.app/api'
 
 export default function StudentDashboard() {
   const user = getUser()

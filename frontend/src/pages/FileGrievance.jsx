@@ -9,7 +9,7 @@ import {
 } from 'react-icons/md'
 import { getUser } from '../utils/auth'
 
-const API = '/api'
+const API = 'https://systems-production.up.railway.app/api'
 const MAX_FILES = 5
 const MAX_SIZE_MB = 2
 
