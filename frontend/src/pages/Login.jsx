@@ -4,7 +4,7 @@ import axios from 'axios'
 import { MdLock, MdPerson, MdWarning, MdVisibility, MdVisibilityOff, MdEmail, MdBadge, MdSchool, MdAdminPanelSettings, MdBalance, MdKey, MdEditNote, MdCheckCircle } from 'react-icons/md'
 import { setUser } from '../utils/auth'
 
-// API endpoint for Railway backend
+// API endpoint for Railway backend - production
 const API = 'https://systems-production.up.railway.app/api'
 
 export default function Login() {
