@@ -508,9 +508,9 @@ export default function CaseDetail() {
                 {attachments.map(a => (
                   <div key={a.attachment_id}
                     style={{borderRadius:'var(--r-sm)',overflow:'hidden',border:'1px solid var(--border)',aspectRatio:'1',cursor:'zoom-in',background:'var(--bg-elevated)'}}
-                    onClick={() => setLightboxImg(`http://localhost:5000/uploads/${a.stored_name}`)}>
+                    onClick={() => setLightboxImg(`https://systems-production.up.railway.app/uploads/${a.stored_name}`)}>
                     <img
-                      src={`http://localhost:5000/uploads/${a.stored_name}`}
+                      src={`https://systems-production.up.railway.app/uploads/${a.stored_name}`}
                       alt={a.original_name}
                       style={{width:'100%',height:'100%',objectFit:'cover'}}
                       onError={e => { e.target.style.display='none' }}
