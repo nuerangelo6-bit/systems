@@ -1,0 +1,203 @@
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
+import { MdNotifications, MdMarkEmailRead, MdDelete, MdFilterList, MdCheckCircle, MdWarning, MdInfo, MdCalendarToday, MdGavel, MdMail, MdNotificationsOff } from 'react-icons/md'
+import { getUser } from '../utils/auth'
+import Toast from '../components/Toast'
+
+const API = '/api'
+
+export default function Notifications() {
+  const user = getUser()
+  const [notifications, setNotifications] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [filter, setFilter] = useState('all')
+  const [toasts, setToasts] = useState([])
+
+  const addToast = (msg, type = 'success') => setToasts(p => [...p, { id: Date.now(), message: msg, type }])
+  const removeToast = id => setToasts(p => p.filter(t => t.id !== id))
+
+  const fetchNotifications = async () => {
+    if (!user?.user_id) {
+      setLoading(false)
+      return
+    }
+    setLoading(true)
+    try {
+      const r = await axios.get(`${API}/grievances`, { params: { complainant_id: user.user_id, limit: 50 } })
+      if (r.data.success) {
+        const grievances = r.data.data
+        const notifs = []
+        
+        for (const g of grievances) {
+          notifs.push({
+            id: `status-${g.grievance_id}`,
+            type: 'status',
+            title: `Case ${g.case_number} Status Update`,
+            message: `Your grievance "${g.subject}" is now ${g.status}`,
+            status: g.status,
+            date: g.submission_date,
+            read: true,
+            grievance_id: g.grievance_id
+          })
+
+          try {
+            const sr = await axios.get(`${API}/grievances/${g.grievance_id}/summons`)
+            if (sr.data.success) {
+              sr.data.data.forEach(s => {
+                const myName = (user?.full_name || '').toLowerCase().trim()
+                const partyName = (s.party_name || '').toLowerCase().trim()
+                const isMyComplainantSummon = s.party_type === 'complainant'
+                const isMyRespondentSummon = s.party_type === 'respondent' && myName && partyName === myName
+                if (isMyComplainantSummon || isMyRespondentSummon) {
+                  notifs.push({
+                    id: `summon-${s.summon_id}`,
+                    type: 'summon',
+                    title: `Hearing Notice - Case ${g.case_number}`,
+                    message: `Hearing #${s.hearing_number} scheduled for ${s.scheduled_date ? new Date(s.scheduled_date).toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' }) : 'TBD'} at ${s.venue}`,
+                    date: s.issued_at,
+                    read: s.is_read,
+                    grievance_id: g.grievance_id,
+                    summon: s
+                  })
+                }
+              })
+            }
+          } catch {}
+        }
+
+        notifs.sort((a, b) => new Date(b.date) - new Date(a.date))
+        setNotifications(notifs)
+      }
+    } catch { addToast('Failed to load notifications', 'error') }
+    finally { setLoading(false) }
+  }
+
+  useEffect(() => {
+    if (user?.user_id) {
+      fetchNotifications()
+    } else {
+      setLoading(false)
+    }
+  }, [user?.user_id])
+
+  const markAsRead = async (notif) => {
+    if (notif.type === 'summon' && !notif.read) {
+      try {
+        await axios.put(`${API}/grievances/${notif.grievance_id}/summons/${notif.summon.summon_id}/read`)
+        setNotifications(p => p.map(n => n.id === notif.id ? { ...n, read: true } : n))
+      } catch {}
+    }
+  }
+
+  const markAllAsRead = async () => {
+    const unread = notifications.filter(n => !n.read && n.type === 'summon')
+    for (const notif of unread) {
+      try {
+        await axios.put(`${API}/grievances/${notif.grievance_id}/summons/${notif.summon.summon_id}/read`)
+      } catch {}
+    }
+    setNotifications(p => p.map(n => ({ ...n, read: true })))
+    addToast('All notifications marked as read')
+  }
+
+  const filteredNotifications = notifications.filter(n => {
+    if (filter === 'all') return true
+    if (filter === 'unread') return !n.read
+    if (filter === 'summons') return n.type === 'summon'
+    if (filter === 'status') return n.type === 'status'
+    return true
+  })
+
+  const unreadCount = notifications.filter(n => !n.read).length
+
+  const getNotificationIcon = (notif) => {
+    if (notif.type === 'summon') return <MdMail size={18} color="var(--purple)" />
+    if (notif.status === 'Resolved') return <MdCheckCircle size={18} color="var(--green)" />
+    if (notif.status === 'Rejected') return <MdWarning size={18} color="var(--red)" />
+    return <MdInfo size={18} color="var(--accent)" />
+  }
+
+  return (
+    <div className="fade-up">
+      <div className="page-header">
+        <div>
+          <h1 className="page-title"><MdNotifications size={24} style={{ verticalAlign: 'middle', marginRight: 8 }} /> <span className="accent">Notifications</span></h1>
+          <p className="page-sub">Stay updated on your grievance cases and hearing notices</p>
+        </div>
+        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+          {unreadCount > 0 && (
+            <button className="btn btn-ghost btn-sm" onClick={markAllAsRead}>
+              <MdMarkEmailRead size={14} /> Mark All Read
+            </button>
+          )}
+          <button className="btn btn-ghost btn-sm" onClick={fetchNotifications}>
+            <MdFilterList size={14} /> Refresh
+          </button>
+        </div>
+      </div>
+
+      <div className="filters-bar">
+        <select className="filter-select" value={filter} onChange={e => setFilter(e.target.value)}>
+          <option value="all">All Notifications</option>
+          <option value="unread">Unread Only</option>
+          <option value="summons">Hearing Summons</option>
+          <option value="status">Status Updates</option>
+        </select>
+        <div style={{ marginLeft: 'auto', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+          {unreadCount} unread
+        </div>
+      </div>
+
+      {loading ? (
+        <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>
+          <div className="spinner" style={{ margin: '0 auto 1rem', width: 26, height: 26 }} />
+          Loading notifications...
+        </div>
+      ) : filteredNotifications.length === 0 ? (
+        <div className="empty-state">
+          <div className="empty-icon"><MdNotificationsOff size={48} /></div>
+          <div className="empty-title">No notifications</div>
+          <div className="empty-sub">{filter === 'unread' ? 'No unread notifications' : 'You have no notifications yet'}</div>
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+          {filteredNotifications.map(notif => (
+            <div
+              key={notif.id}
+              className={`panel ${!notif.read ? 'panel-unread' : ''}`}
+              style={{ cursor: 'pointer', padding: '1rem 1.25rem' }}
+              onClick={() => markAsRead(notif)}
+            >
+              <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                <div style={{ flexShrink: 0, marginTop: '2px' }}>
+                  {getNotificationIcon(notif)}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '4px', gap: '1rem' }}>
+                    <div style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-primary)' }}>
+                      {notif.title}
+                    </div>
+                    {!notif.read && (
+                      <span style={{ background: 'var(--accent)', color: '#fff', borderRadius: '12px', padding: '2px 8px', fontSize: '0.65rem', fontWeight: 700, flexShrink: 0 }}>
+                        NEW
+                      </span>
+                    )}
+                  </div>
+                  <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '6px', lineHeight: 1.5 }}>
+                    {notif.message}
+                  </div>
+                  <div style={{ fontSize: '0.73rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <MdCalendarToday size={12} />
+                    {new Date(notif.date).toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <Toast toasts={toasts} removeToast={removeToast} />
+    </div>
+  )
+}
