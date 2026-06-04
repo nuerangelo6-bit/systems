@@ -54,6 +54,7 @@ export default function CaseDetail() {
   const [assignAdmin, setAssignAdmin] = useState('')
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [deleteConfirmText, setDeleteConfirmText] = useState('')
+  const [showDeleteSuccess, setShowDeleteSuccess] = useState(false)
 
   const addToast = (msg, type = 'success') => setToasts(p => [...p, { id: Date.now(), message: msg, type }])
   const removeToast = id => setToasts(p => p.filter(t => t.id !== id))
@@ -183,9 +184,9 @@ export default function CaseDetail() {
     }
     try {
       await axios.delete(`${API}/grievances/${id}`)
-      addToast('Case deleted successfully')
       setShowDeleteModal(false)
       setDeleteConfirmText('')
+      setShowDeleteSuccess(true)
       setTimeout(() => navigate('/'), 2000)
     } catch { addToast('Failed to delete', 'error') }
   }
@@ -674,6 +675,15 @@ export default function CaseDetail() {
                 <MdDelete size={14} /> Delete Permanently
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      {showDeleteSuccess && (
+        <div className="modal-overlay" style={{ zIndex: 1000 }}>
+          <div className="modal-box" style={{ maxWidth: 380, textAlign: 'center', padding: '2rem' }}>
+            <div style={{ fontSize: 48, color: 'var(--green)', marginBottom: '1rem' }}>✓</div>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem', color: 'var(--text-primary)' }}>Delete Successful</h3>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>The case has been permanently deleted.</p>
           </div>
         </div>
       )}
