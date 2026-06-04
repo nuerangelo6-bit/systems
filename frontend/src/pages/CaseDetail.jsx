@@ -186,7 +186,7 @@ export default function CaseDetail() {
       addToast('Case deleted successfully')
       setShowDeleteModal(false)
       setDeleteConfirmText('')
-      setTimeout(() => navigate('/'), 800)
+      setTimeout(() => navigate('/'), 2000)
     } catch { addToast('Failed to delete', 'error') }
   }
 
