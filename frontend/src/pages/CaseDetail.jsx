@@ -8,7 +8,7 @@ import HearingSummaryModal from '../components/HearingSummaryModal'
 import {
   MdArrowBack, MdRefresh, MdSchedule, MdCheckCircle, MdLoop,
   MdPrint, MdAssignment, MdSend, MdSummarize, MdWarning, MdImage,
-  MdDelete, MdCalendarToday, MdLocationOn, MdAccessTime, MdMail, MdPeople, MdPerson
+  MdDelete, MdCalendarToday, MdLocationOn, MdAccessTime, MdMail, MdPeople, MdPerson, MdClose
 } from 'react-icons/md'
 import { getUser, isSuperAdmin, isStudent } from '../utils/auth'
 import API from '../config/api'
