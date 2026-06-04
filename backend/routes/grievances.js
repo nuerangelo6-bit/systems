@@ -370,7 +370,7 @@ router.put('/:id/hearings/:hearingId', authMiddleware, requireRole(['admin', 'su
 });
 
 
-router.delete('/:id', authMiddleware, requireRole(['superadmin']), async (req, res) => {
+router.delete('/:id', authMiddleware, requireRole(['admin', 'superadmin']), async (req, res) => {
   try {
     await pool.query('DELETE FROM grievances WHERE grievance_id = ?', [req.params.id]);
     res.json({ success: true, message: 'Grievance deleted' });
