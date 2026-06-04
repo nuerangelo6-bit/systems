@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { MdHistory, MdRefresh, MdFilterList, MdSearch, MdPerson, MdCheckCircle, MdWarning, MdInfo } from 'react-icons/md'
 import Toast from '../components/Toast'
-
-const API = 'https://systems-production.up.railway.app/api'
+import API from '../config/api'
 
 export default function SystemAuditLogs() {
   const [logs, setLogs] = useState([])

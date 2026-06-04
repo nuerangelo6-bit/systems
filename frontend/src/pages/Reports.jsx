@@ -6,8 +6,7 @@ import { MdAssessment, MdFilterList, MdDownload, MdCalendarToday, MdTrendingUp, 
 import { getUser } from '../utils/auth'
 import GrievanceChart from '../components/GrievanceChart'
 import Toast from '../components/Toast'
-
-const API = 'https://systems-production.up.railway.app/api'
+import API from '../config/api'
 
 export default function Reports() {
   const user = getUser()

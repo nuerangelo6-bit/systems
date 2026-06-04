@@ -11,8 +11,7 @@ import {
   MdDelete, MdCalendarToday, MdLocationOn, MdAccessTime, MdMail, MdPeople, MdPerson
 } from 'react-icons/md'
 import { getUser, isSuperAdmin, isStudent } from '../utils/auth'
-
-const API = 'https://systems-production.up.railway.app/api'
+import API from '../config/api'
 
 export default function CaseDetail() {
   const { id } = useParams()

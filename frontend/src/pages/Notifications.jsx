@@ -4,8 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { MdNotifications, MdMarkEmailRead, MdDelete, MdFilterList, MdCheckCircle, MdWarning, MdInfo, MdCalendarToday, MdGavel, MdMail, MdNotificationsOff } from 'react-icons/md'
 import { getUser } from '../utils/auth'
 import Toast from '../components/Toast'
-
-const API = 'https://systems-production.up.railway.app/api'
+import API from '../config/api'
 
 export default function Notifications() {
   const user = getUser()

@@ -4,8 +4,7 @@ import Toast from '../components/Toast'
 import StatusBadge from '../components/StatusBadge'
 import { MdRefresh, MdAssignment, MdPeople, MdGavel, MdAdminPanelSettings, MdWarning } from 'react-icons/md'
 import { Link } from 'react-router-dom'
-
-const API = 'https://systems-production.up.railway.app/api'
+import API from '../config/api'
 
 export default function AdminPanel() {
   const [admins, setAdmins] = useState([])

@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 import axios from 'axios'
 import { MdPlayArrow, MdCode, MdContentCopy } from 'react-icons/md'
-
-const API = 'https://systems-production.up.railway.app/api'
+import API from '../config/api'
 const PRESETS = [
   { label: 'All Grievances', sql: 'SELECT * FROM vw_grievance_summary ORDER BY submission_date DESC' },
   { label: 'Unassigned Cases', sql: "SELECT case_number, student_name, suspect_name, subject, status FROM grievances WHERE assigned_admin_id IS NULL AND status NOT IN ('Resolved','Closed','Rejected')" },

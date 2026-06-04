@@ -4,8 +4,7 @@ import { Link } from 'react-router-dom'
 import StatusBadge from '../components/StatusBadge'
 import Toast from '../components/Toast'
 import { MdRefresh, MdPeople, MdGavel, MdWarning, MdCheckCircle, MdTrendingUp, MdAssignment, MdCalendarToday, MdAdminPanelSettings, MdHourglassEmpty, MdBalance, MdShowChart, MdAccessTime, MdFolder, MdLocationOn } from 'react-icons/md'
-
-const API = 'https://systems-production.up.railway.app/api'
+import API from '../config/api'
 
 function BarChart({ data, max, color }) {
   return (

@@ -3,8 +3,7 @@ import axios from 'axios'
 import { MdPerson, MdEmail, MdBadge, MdEdit, MdLock, MdSave, MdCancel } from 'react-icons/md'
 import { getUser, setUser } from '../utils/auth'
 import Toast from '../components/Toast'
-
-const API = 'https://systems-production.up.railway.app/api'
+import API from '../config/api'
 
 export default function Profile() {
   const user = getUser()

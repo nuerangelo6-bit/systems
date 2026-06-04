@@ -8,8 +8,7 @@ import {
   MdWavingHand, MdAssignment, MdAccountCircle, MdDescription, MdInfo
 } from 'react-icons/md'
 import { getUser } from '../utils/auth'
-
-const API = 'https://systems-production.up.railway.app/api'
+import API from '../config/api'
 const MAX_FILES = 5
 const MAX_SIZE_MB = 2
 

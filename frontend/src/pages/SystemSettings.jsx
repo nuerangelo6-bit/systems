@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { MdSettings, MdRefresh, MdSave, MdSchool, MdCalendarToday, MdEdit, MdCheckCircle } from 'react-icons/md'
 import Toast from '../components/Toast'
-
-const API = 'https://systems-production.up.railway.app/api'
+import API from '../config/api'
 
 export default function SystemSettings() {
   const [settings, setSettings] = useState({

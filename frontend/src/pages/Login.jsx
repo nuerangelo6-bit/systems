@@ -3,9 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { MdLock, MdPerson, MdWarning, MdVisibility, MdVisibilityOff, MdEmail, MdBadge, MdSchool, MdAdminPanelSettings, MdBalance, MdKey, MdEditNote, MdCheckCircle } from 'react-icons/md'
 import { setUser } from '../utils/auth'
-
-// API endpoint for Railway backend - production
-const API = 'https://systems-production.up.railway.app/api'
+import API from '../config/api'
 
 export default function Login() {
   const navigate = useNavigate()
