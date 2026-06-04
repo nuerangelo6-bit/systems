@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { MdGavel, MdSecurity, MdSpeed, MdPeople, MdKeyboardArrowDown, MdEmail, MdLock, MdPerson, MdSchool, MdVisibility, MdVisibilityOff } from 'react-icons/md'
+import API from '../config/api'
 
 export default function Landing() {
   const navigate = useNavigate()
@@ -33,7 +34,7 @@ export default function Landing() {
     setResendDisabled(true)
 
     try {
-      const response = await fetch('/api/auth/send-otp', {
+      const response = await fetch(`${API}/auth/send-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: formData.email })
@@ -79,7 +80,7 @@ export default function Landing() {
 
     try {
       console.log('Starting OTP verification...')
-      const verifyResponse = await fetch('/api/auth/verify-otp', {
+      const verifyResponse = await fetch(`${API}/auth/verify-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: formData.email, otp })
@@ -96,7 +97,7 @@ export default function Landing() {
       }
 
       console.log('Starting registration...')
-      const registerResponse = await fetch('/api/auth/register', {
+      const registerResponse = await fetch(`${API}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -157,7 +158,7 @@ export default function Landing() {
     setError('')
 
     try {
-      const verifyResponse = await fetch('/api/auth/verify-otp', {
+      const verifyResponse = await fetch(`${API}/auth/verify-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: formData.email, otp })
@@ -170,7 +171,7 @@ export default function Landing() {
         return
       }
 
-      const registerResponse = await fetch('/api/auth/register', {
+      const registerResponse = await fetch(`${API}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -203,7 +204,7 @@ export default function Landing() {
     setError('')
 
     try {
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch(`${API}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: loginForm.username, password: loginForm.password })
