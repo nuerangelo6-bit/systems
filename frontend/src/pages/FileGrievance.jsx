@@ -27,6 +27,8 @@ export default function FileGrievance() {
   const [attachments, setAttachments] = useState([])
   const [form, setForm] = useState({ student_id_num: '', category_id: '', subject: '', description: '' })
   const [errors, setErrors] = useState({})
+
+  const categoriesRequiringSuspect = ['Bullying', 'Faculty/Staff Conduct', 'Harassment & Discrimination']
   const [submitting, setSubmitting] = useState(false)
   const [toasts, setToasts] = useState([])
   const [submitted, setSubmitted] = useState(null)
@@ -130,7 +132,11 @@ export default function FileGrievance() {
     else if (form.subject.trim().length < 5) e.subject = 'Subject must be at least 5 characters'
     if (!form.description.trim()) e.description = 'Description is required'
     else if (form.description.trim().length < 20) e.description = 'Description must be at least 20 characters'
-    if (!selectedSuspect) e.suspect = 'Please select the respondent/suspect'
+    
+    const categoryName = categories.find(c => c.category_id === Number(form.category_id))?.category_name || ''
+    if (categoriesRequiringSuspect.includes(categoryName) && !selectedSuspect) {
+      e.suspect = 'Please select the respondent/suspect for this category'
+    }
     return e
   }
 
@@ -153,8 +159,8 @@ export default function FileGrievance() {
         category_id: Number(form.category_id),
         subject: form.subject,
         description: form.description,
-        suspect_id: selectedSuspect?.suspect_id,
-        suspect_name: selectedSuspect?.full_name,
+        suspect_id: selectedSuspect?.suspect_id || null,
+        suspect_name: selectedSuspect?.full_name || null,
       })
 
       const grievanceId = r.data.data?.grievance_id
@@ -187,6 +193,7 @@ export default function FileGrievance() {
   }
 
   const categoryName = categories.find(c => c.category_id === Number(form.category_id))?.category_name || ''
+  const requiresSuspect = categoriesRequiringSuspect.includes(categoryName)
   const charCount = form.description.length
   const charOk = charCount >= 20
 
@@ -255,52 +262,56 @@ export default function FileGrievance() {
         </div>
 
 
-        <div className="form-section-title" style={{ marginTop: '0.5rem' }}><MdWarning size={16} style={{ verticalAlign: 'middle', marginRight: 6 }} /> Respondent / Suspect</div>
-        <div className="form-group">
-          <label className="form-label">Select Respondent <span>*</span></label>
-          <div className="suspect-picker" ref={suspectRef}>
-            {selectedSuspect ? (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <div className="suspect-selected-tag">
-                  <MdPerson size={14} />
-                  {selectedSuspect.full_name}
-                  <span style={{ fontSize: '0.65rem', opacity: 0.7 }}>· {selectedSuspect.section}</span>
-                  <button onClick={() => setSelectedSuspect(null)}><MdClose size={13} /></button>
-                </div>
-              </div>
-            ) : (
-              <>
-                <div style={{ position: 'relative' }}>
-                  <MdSearch style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} size={16} />
-                  <input className={`form-control ${errors.suspect ? 'error' : ''}`}
-                    style={{ paddingLeft: 36 }}
-                    placeholder="Type to search classmate name..."
-                    value={suspectSearch}
-                    onChange={e => setSuspectSearch(e.target.value)}
-                    onFocus={() => setShowSuspectDropdown(true)} />
-                </div>
-                {showSuspectDropdown && (
-                  <div className="suspect-dropdown">
-                    {filteredSuspects.length === 0
-                      ? <div style={{ padding: '12px 14px', fontSize: '0.82rem', color: 'var(--text-muted)' }}>No results found — type full name</div>
-                      : filteredSuspects.map(s => (
-                        <div key={s.suspect_id} className="suspect-option"
-                          onClick={() => { setSelectedSuspect(s); setSuspectSearch(''); setShowSuspectDropdown(false); setErrors(p => ({ ...p, suspect: '' })) }}>
-                          <MdPerson size={15} color="var(--purple)" />
-                          <div>
-                            <div style={{ fontWeight: 600, fontSize: '0.85rem' }}>{s.full_name}</div>
-                            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{s.section}</div>
-                          </div>
-                        </div>
-                      ))
-                    }
+        {requiresSuspect && (
+          <>
+            <div className="form-section-title" style={{ marginTop: '0.5rem' }}><MdWarning size={16} style={{ verticalAlign: 'middle', marginRight: 6 }} /> Respondent / Suspect</div>
+            <div className="form-group">
+              <label className="form-label">Select Respondent <span>*</span></label>
+              <div className="suspect-picker" ref={suspectRef}>
+                {selectedSuspect ? (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <div className="suspect-selected-tag">
+                      <MdPerson size={14} />
+                      {selectedSuspect.full_name}
+                      <span style={{ fontSize: '0.65rem', opacity: 0.7 }}>· {selectedSuspect.section}</span>
+                      <button onClick={() => setSelectedSuspect(null)}><MdClose size={13} /></button>
+                    </div>
                   </div>
+                ) : (
+                  <>
+                    <div style={{ position: 'relative' }}>
+                      <MdSearch style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} size={16} />
+                      <input className={`form-control ${errors.suspect ? 'error' : ''}`}
+                        style={{ paddingLeft: 36 }}
+                        placeholder="Type to search classmate name..."
+                        value={suspectSearch}
+                        onChange={e => setSuspectSearch(e.target.value)}
+                        onFocus={() => setShowSuspectDropdown(true)} />
+                    </div>
+                    {showSuspectDropdown && (
+                      <div className="suspect-dropdown">
+                        {filteredSuspects.length === 0
+                          ? <div style={{ padding: '12px 14px', fontSize: '0.82rem', color: 'var(--text-muted)' }}>No results found — type full name</div>
+                          : filteredSuspects.map(s => (
+                            <div key={s.suspect_id} className="suspect-option"
+                              onClick={() => { setSelectedSuspect(s); setSuspectSearch(''); setShowSuspectDropdown(false); setErrors(p => ({ ...p, suspect: '' })) }}>
+                              <MdPerson size={15} color="var(--purple)" />
+                              <div>
+                                <div style={{ fontWeight: 600, fontSize: '0.85rem' }}>{s.full_name}</div>
+                                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{s.section}</div>
+                              </div>
+                            </div>
+                          ))
+                        }
+                      </div>
+                    )}
+                  </>
                 )}
-              </>
-            )}
-          </div>
-          {errors.suspect && <div className="form-error"><MdWarning size={13} /> {errors.suspect}</div>}
-        </div>
+              </div>
+              {errors.suspect && <div className="form-error"><MdWarning size={13} /> {errors.suspect}</div>}
+            </div>
+          </>
+        )}
 
 
         <div className="form-section-title"><MdDescription size={16} style={{ verticalAlign: 'middle', marginRight: 6 }} /> Grievance Details</div>
@@ -471,7 +482,7 @@ export default function FileGrievance() {
               </div>
 
               
-              {selectedSuspect && (
+              {selectedSuspect && requiresSuspect && (
                 <div className="suspect-box">
                   <MdWarning size={20} style={{ color: 'var(--purple)' }} />
                   <div>
