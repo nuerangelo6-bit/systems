@@ -100,11 +100,18 @@ router.post('/', authMiddleware, requireRole(['student']), async (req, res) => {
 
     console.log('Step 1: Generating case number');
     const year = new Date().getFullYear();
-    const [count] = await pool.query(
-      'SELECT COUNT(*) as count FROM grievances WHERE YEAR(submission_date) = ?',
+    const [maxCase] = await pool.query(
+      'SELECT case_number FROM grievances WHERE YEAR(submission_date) = ? ORDER BY case_number DESC LIMIT 1',
       [year]
     );
-    const caseNumber = `GRV-${year}-${String(count[0].count + 1).padStart(4, '0')}`;
+    
+    let nextNum = 1;
+    if (maxCase.length > 0 && maxCase[0].case_number) {
+      const currentNum = parseInt(maxCase[0].case_number.split('-')[2]);
+      nextNum = currentNum + 1;
+    }
+    
+    const caseNumber = `GRV-${year}-${String(nextNum).padStart(4, '0')}`;
     console.log('Case number generated:', caseNumber);
 
     console.log('Step 2: Calling stored procedure');
